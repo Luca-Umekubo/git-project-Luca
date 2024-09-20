@@ -11,7 +11,5 @@ public class Git{
             System.out.println ("Git Repository already exists");
         else
             git.mkdir(); objects.mkdirs(); index.createNewFile();
-        
-    
     }
 }
