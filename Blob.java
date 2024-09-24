@@ -24,7 +24,14 @@ public class Blob {
     }
 
     public String generateFileName(String path) throws IOException, NoSuchAlgorithmException {
+        FileInputStream fileInputStream = new FileInputStream(path);
         MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        DigestInputStream digestInputStream = new DigestInputStream(fileInputStream, digest);
+        byte[] bytes = new byte[1024];
+        // read all file content
+        while (digestInputStream.read(bytes) > 0);
+
+//        digest = digestInputStream.getMessageDigest();
         byte[] resultByteArry = digest.digest();
         return bytesToHexString(resultByteArry);
     }
