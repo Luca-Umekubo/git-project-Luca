@@ -13,8 +13,16 @@ public class Git{
             System.out.println ("Git Repository already exists");
             return true;
         }
-        git.mkdir(); objects.mkdirs(); index.createNewFile();
-        return false;
+        else {
+            if (!git.exists())
+                git.mkdir();
+            else if (!objects.exists())
+                objects.mkdirs();
+            else if (!index.exists())
+                index.createNewFile();
+            return false;
+        }
+        
     }
 
     public static void deleteRepo() {
