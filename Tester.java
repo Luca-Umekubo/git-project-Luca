@@ -1,11 +1,11 @@
-import java.io.File;
 import java.io.*;
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
 public class Tester {
-    public static void main (String [] args) throws IOException{
-        // File git = new File("git");
-        // File objects = new File(git, "objects");
-        // File index = new File(objects, "index");
+    public static void main (String [] args) throws IOException, NoSuchAlgorithmException{
+        File git = new File("git");
+        File index = new File(git, "index");
         if (Git.initializeRepo()) {
             System.out.println ("All files and folders are there!!");
             Git.deleteRepo();
