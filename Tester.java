@@ -14,18 +14,27 @@ public class Tester {
             System.out.println ("The folders and files are not there!! Something is wrong in your code.");
         }
 
+        //assumes milestone 1 works
         Git.initializeRepo();
+
+
         File sampleFile = new File("sample.txt");
         FileWriter writer = new FileWriter(sampleFile);
         writer.write("TEST TES");
         writer.close();
+
         Blob blob = new Blob("git");
         blob.createNewBlob("sample.txt");
+
+        // Makes sures blob was made in the right place
         File blobFile = new File("git/objects/" + blob.generateFileName("sample.txt"));
         if (blobFile.exists()) 
             System.out.println("YES!! blob was made in objects.");
         else 
             System.out.println("NOO!! blob wasn't created in objects and code is wrong :()");
+        
+
+        // Makes sure index was updated correctly
         String currentIndex = new String(Files.readAllBytes(Path.of("git/index")));
         if (currentIndex.contains(blob.generateFileName("sample.txt")) && currentIndex.contains("sample.txt")) {
             System.out.println("Yup, it worked!!");
@@ -33,8 +42,11 @@ public class Tester {
         else {
             System.out.println("womp womp it faild and index wasnt updated properly");
         }
+
+        //resets index so the tester can run again
         index.delete();
         index.createNewFile();
+
 
     }
 }
