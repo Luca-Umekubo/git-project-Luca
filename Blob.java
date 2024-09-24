@@ -42,4 +42,36 @@ public class Blob {
         }
         return sb.toString();
     }
+
+    public void createNewBlob(String path) throws IOException, NoSuchAlgorithmException {
+        File file = new File(path);
+        if (!file.exists()) {
+            System.out.println("File DNE.");
+            return;
+        }
+
+        String hash = generateFileName(path);
+
+        File newBlob = new File("git/objects/", hash);
+        if (!newBlob.exists()){
+            File original = new File(path);
+            File location = new File("git/objects", hash);
+            Files.copy(original.toPath(), location.toPath());
+        }
+
+        String fileName = file.getName();
+        BufferedReader reader = new BufferedReader(new FileReader("git/index"));
+        while (reader.ready()) {
+            String line = reader.readLine();
+            if (Objects.equals(line.substring(line.length() - fileName.length()), fileName)) {
+                reader.close();
+            }
+        }
+        reader.close();
+        File index = new File("git/index");
+        FileWriter writer = new FileWriter(index, true);
+        writer.write(hash + " " + path.substring(path.lastIndexOf("/") + 1));
+        writer.write(System.lineSeparator());
+        writer.close();
+    }
 }
