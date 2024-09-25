@@ -18,16 +18,16 @@ public class Tester {
         Git.initializeRepo();
 
 
-        File sampleFile = new File("sample.txt");
+        File sampleFile = new File("temp folder/sample.txt");
         FileWriter writer = new FileWriter(sampleFile);
         writer.write("TEST TES");
         writer.close();
 
         Blob blob = new Blob("git");
-        blob.createNewBlob("sample.txt");
+        blob.createNewBlob("temp folder/sample.txt");
 
         // Makes sures blob was made in the right place
-        File blobFile = new File("git/objects/" + blob.generateFileName("sample.txt"));
+        File blobFile = new File("git/objects/" + blob.generateFileName("temp folder/sample.txt"));
         if (blobFile.exists()) 
             System.out.println("YES!! blob was made in objects.");
         else 
@@ -36,7 +36,7 @@ public class Tester {
 
         // Makes sure index was updated correctly
         String currentIndex = new String(Files.readAllBytes(Path.of("git/index")));
-        if (currentIndex.contains(blob.generateFileName("sample.txt")) && currentIndex.contains("sample.txt")) {
+        if (currentIndex.contains(blob.generateFileName("temp folder/sample.txt")) && currentIndex.contains("temp folder/sample.txt")) {
             System.out.println("Yup, it worked!!");
         }
         else {
@@ -44,8 +44,8 @@ public class Tester {
         }
 
         //resets index so the tester can run again
-        index.delete();
-        index.createNewFile();
+        //index.delete();
+       // index.createNewFile();
 
 
     }

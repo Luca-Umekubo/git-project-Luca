@@ -77,7 +77,13 @@ public class Blob {
         reader.close();
         File index = new File("git/index");
         FileWriter writer = new FileWriter(index, true);
-        writer.write(hash + " " + path.substring(path.lastIndexOf("/") + 1));
+        File temp = new File(path);
+        if (temp.isDirectory()){
+            writer.write("tree " + hash + " " + path.substring(path.lastIndexOf("git-project-Luca/") + 1));
+        }
+        else{
+            writer.write("blob " + hash + " " + path.substring(path.lastIndexOf("git-project-Luca/") + 1));
+        }
         writer.write(System.lineSeparator());
         writer.close();
     }
