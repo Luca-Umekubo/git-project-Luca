@@ -73,13 +73,19 @@ public class Blob {
 
     //takes in a path that might be a directory or normal file
     public void createNewBlob(String path) throws IOException, NoSuchAlgorithmException {
-        //initialize original fole
+        //initialize original file
         File file = new File(path);
         if (!file.exists()) {
             System.out.println("File DNE.");
             return;
         }
 
+        // Check if file or directory is readable
+        if (!file.canRead()) {
+            System.out.println("permission denied, unable to read " + path);
+            return;
+        }
+        
         //generate file name string
         String hash = generateFileName(path);
 
@@ -94,29 +100,40 @@ public class Blob {
 
 
 
-        //if file is not a directory:
-        String fileName = file.getName();
-        //i liteally have no idea what this reader does
-        BufferedReader reader = new BufferedReader(new FileReader("git/index"));
-        while (reader.ready()) {
-            String line = reader.readLine();
-            if (Objects.equals(line.substring(line.length() - fileName.length()), fileName)) {
-                reader.close();
+        if (!file.isDirectory()){
+            String fileName = file.getName();
+            BufferedReader reader = new BufferedReader(new FileReader("git/index"));
+            while (reader.ready()) {
+                String line = reader.readLine();
+                if (Objects.equals(line.substring(line.length() - fileName.length()), fileName)) {
+                    reader.close();
+                }
             }
-        }
-        reader.close();
+            reader.close();
 
-        File index = new File("git/index");
-        FileWriter writer = new FileWriter(index, true);
-        File temp = new File(path);
-        if (temp.isDirectory()){
-            
-            writer.write("tree " + hash + " " + path.substring(path.lastIndexOf("git-project-Luca/") + 1));
+            //add the blob entry to the index file
+            File index1 = new File("git/index");
+            FileWriter writer1 = new FileWriter(index1, true);
+            writer1.write("blob " + hash + " " + path.substring(path.lastIndexOf("git-project-Luca/") + 1));
+            writer1.write(System.lineSeparator());
+            writer1.close();
+
         }
         else{
-            writer.write("blob " + hash + " " + path.substring(path.lastIndexOf("git-project-Luca/") + 1));
+            File[] filesInDirectory = file.listFiles();
+            if (filesInDirectory != null) {
+                for (File f : filesInDirectory) {
+                    //recursively call createNewBlob
+                    createNewBlob(f.getPath());
+                }
+            }
+
+            //add the tree entry to the index file
+            File index = new File("git/index");
+            FileWriter writer = new FileWriter(index, true);
+            writer.write("tree " + hash + " " + path.substring(path.lastIndexOf("git-project-Luca/") + 1));
+            writer.write(System.lineSeparator());
+            writer.close();
         }
-        writer.write(System.lineSeparator());
-        writer.close();
     }
 }
