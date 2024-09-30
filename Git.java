@@ -37,7 +37,7 @@ public class Git{
         index.delete(); objects.delete(); git.delete();
     }
 
-        public String generateFileName(String path) throws IOException, NoSuchAlgorithmException {
+    public String generateFileName(String path) throws IOException, NoSuchAlgorithmException {
 
         //if file is not a directory:
         if (!new File(path).isDirectory()){
@@ -52,15 +52,23 @@ public class Git{
 
     //        digest = digestInputStream.getMessageDigest();
             byte[] resultByteArry = digest.digest();
+            digestInputStream.close();
             return bytesToHexString(resultByteArry);
         }
+
+//4g34t
         //if file is a directory:
         else{
             File file = new File(path);
             File[] contents = file.listFiles();
             StringBuilder sb = new StringBuilder();
             for (File temp : contents) {
-                sb.append(temp.getName());
+                if (temp.isDirectory()){
+                    sb.append("tree " + generateFileName(temp.getPath()) + " " + temp.getPath());
+                }
+                else{
+                    sb.append("blob " + generateFileName(temp.getPath()) + " " + temp.getPath());
+                }
             }
             String fileNames = sb.toString();
             byte[] bytes = fileNames.getBytes(StandardCharsets.UTF_8);
@@ -112,6 +120,8 @@ public class Git{
 
 
         if (!file.isDirectory()){
+
+            //checks if already eists
             String fileName = file.getPath();
             BufferedReader reader = new BufferedReader(new FileReader("git/index"));
             while (reader.ready()) {
