@@ -36,7 +36,7 @@ public class Tester {
 
         // Makes sure index was updated correctly
         String currentIndex = new String(Files.readAllBytes(Path.of("git/index")));
-        if (currentIndex.contains(blob.generateFileName("temp folder/sample.txt")) && currentIndex.contains("temp folder/sample.txt")) {
+        if (currentIndex.contains(blob.generateFileName("sample.txt")) && currentIndex.contains("sample.txt")) {
             System.out.println("Yup, it worked!!");
         }
         else {
