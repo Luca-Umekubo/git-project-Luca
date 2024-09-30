@@ -37,7 +37,7 @@ public class Git{
         index.delete(); objects.delete(); git.delete();
     }
 
-    public String generateFileName(String path) throws IOException, NoSuchAlgorithmException {
+    public static String generateFileName(String path) throws IOException, NoSuchAlgorithmException {
 
         //if file is not a directory:
         if (!new File(path).isDirectory()){
@@ -56,7 +56,6 @@ public class Git{
             return bytesToHexString(resultByteArry);
         }
 
-//4g34t
         //if file is a directory:
         else{
             File file = new File(path);
@@ -92,7 +91,7 @@ public class Git{
     }
 
     //takes in a path that might be a directory or normal file
-    public void createNewBlob(String path) throws IOException, NoSuchAlgorithmException {
+    public static void createNewBlob(String path) throws IOException, NoSuchAlgorithmException {
         //initialize original file
         File file = new File(path);
         if (!file.exists()) {
@@ -119,6 +118,7 @@ public class Git{
 
 
 
+        //index update
         if (!file.isDirectory()){
 
             //checks if already eists
@@ -142,6 +142,7 @@ public class Git{
 
         }
         else{
+            //recursively calls create new blob on all the files within directory
             File[] filesInDirectory = file.listFiles();
             if (filesInDirectory != null) {
                 for (File f : filesInDirectory) {
