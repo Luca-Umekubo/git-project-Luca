@@ -63,16 +63,18 @@ public class Git{
             StringBuilder sb = new StringBuilder();
             for (File temp : contents) {
                 if (temp.isDirectory()){
-                    sb.append("tree " + generateFileName(temp.getPath()) + " " + temp.getPath());
+                    sb.append("tree " + generateFileName(temp.getPath()) + " " + temp.getPath() + "\n");
                 }
                 else{
-                    sb.append("blob " + generateFileName(temp.getPath()) + " " + temp.getPath());
+                    sb.append("blob " + generateFileName(temp.getPath()) + " " + temp.getPath() + "\n");
                 }
             }
             String fileNames = sb.toString();
-            byte[] bytes = fileNames.getBytes(StandardCharsets.UTF_8);
-            return bytesToHexString(bytes);
-            
+
+
+            MessageDigest digester = MessageDigest.getInstance("SHA-1");
+            byte[] sha1bytes = digester.digest(fileNames.getBytes());
+            return bytesToHexString(sha1bytes);
         }
     }
 
@@ -85,7 +87,7 @@ public class Git{
                 // one character, so we need to append a character of '0'
                 sb.append("0");
             }
-            sb.append(Integer.toHexString(value).toUpperCase());
+            sb.append(Integer.toHexString(value));
         }
         return sb.toString();
     }
@@ -116,7 +118,18 @@ public class Git{
                 Files.copy(original.toPath(), newBlob.toPath());
             }
             else{
-                
+                newBlob.createNewFile();
+                File[] contents = original.listFiles();
+                FileWriter fw = new FileWriter(newBlob);
+                for (File temp : contents) {
+                    if (temp.isDirectory()){
+                        fw.append("tree " + generateFileName(temp.getPath()) + " " + temp.getPath() + "\n");
+                    }
+                    else{
+                        fw.append("blob " + generateFileName(temp.getPath()) + " " + temp.getPath() + "\n");
+                    }
+                }
+                fw.close();
             }
         }
 
