@@ -11,6 +11,13 @@ public class LucaTester {
 
         testSetup1();
 
+        File tempFile = new File("tempFile.txt");
+        tempFile.createNewFile();
+        FileWriter fw1 = new FileWriter(tempFile);
+        fw1.append("new file");
+        fw1.close();
+
+
         Git.initializeRepo();
         Git.createNewBlob("root");
         

@@ -4,28 +4,28 @@ import java.nio.file.Files;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Objects;
 public class Git{
     public static void main(String[] args) throws IOException {
         initializeRepo();
     }
 
-    public static boolean initializeRepo() throws IOException{
+    public static void initializeRepo() throws IOException{
         File git = new File("git");
-        File objects = new File(git, "objects");
-        File index = new File(git, "index");
+        File objects = new File("git/objects");
+        File index = new File("git/index");
+
         if (git.exists() && objects.exists() && index.exists()) {
             System.out.println ("Git Repository already exists");
-            return true;
         }
         else {
             if (!git.exists())
                 git.mkdir();
-            else if (!objects.exists())
-                objects.mkdirs();
-            else if (!index.exists())
+            if (!objects.exists())
+                objects.mkdir();
+            if (!index.exists())
                 index.createNewFile();
-            return false;
         }
         
     }
@@ -108,12 +108,16 @@ public class Git{
         String hash = generateFileName(path);
 
         //initialize copy file
-        File newBlob = new File("git/objects/", hash);
+        File newBlob = new File("git/objects/" + hash);
         //copy the file
         if (!newBlob.exists()){
             File original = new File(path);
-            File location = new File("git/objects", hash);
-            Files.copy(original.toPath(), location.toPath());
+            if (!file.isDirectory()){
+                Files.copy(original.toPath(), newBlob.toPath());
+            }
+            else{
+                
+            }
         }
 
 
